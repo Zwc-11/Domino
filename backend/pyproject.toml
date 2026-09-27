@@ -1,0 +1,86 @@
+[project]
+name = "domino"
+version = "0.0.0"
+description = "DOMINO backend: Economic Compiler, domain, application, and API layers."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.168",
+    "mypy>=2.3",
+    "pytest>=9.1",
+    "ruff>=0.16",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.19,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv]
+required-version = ">=0.12"
+
+# ---------------------------------------------------------------- pytest
+[tool.pytest.ini_options]
+minversion = "9.0"
+testpaths = ["tests"]
+addopts = [
+    "--import-mode=importlib",
+    "--strict-markers",
+    "--strict-config",
+    "-ra",
+]
+xfail_strict = true
+filterwarnings = ["error"]
+
+# ------------------------------------------------------------------ mypy
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool", "possibly-undefined"]
+files = ["src", "tests"]
+mypy_path = "src"
+explicit_package_bases = true
+
+# ------------------------------------------------------------------ ruff
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",   # pycodestyle
+    "F",        # pyflakes
+    "I",        # isort
+    "N",        # pep8-naming
+    "UP",       # pyupgrade
+    "B",        # bugbear
+    "BLE",      # blind except          (AGENTS.md §11)
+    "S",        # bandit: S110 try-except-pass, S112 try-except-continue, secrets
+    "SIM",
+    "C4",
+    "PT",       # pytest style
+    "PIE",
+    "RET",
+    "RSE",
+    "TRY",      # exception handling hygiene
+    "PERF",
+    "PL",
+    "RUF",
+]
+ignore = [
+    "TRY003",   # long messages in exception constructors are acceptable
+    "PLR0913",  # argument counts judged in review, not by a fixed threshold
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = [
+    "S101",     # assert is the pytest idiom
+    "PLR2004",  # literal values are expected in tests
+]
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
